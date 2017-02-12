@@ -43,6 +43,6 @@ app.get('/', function (req, res) {
   }
 })
 
-const serverPort = process.env.OPENSHIFT_NODEJS_PORT || 3000
+const serverPort = process.env.PORT || 3000
 
 app.listen(serverPort, () => { console.log(`Server listening on port ${serverPort}`) })
