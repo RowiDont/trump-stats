@@ -1,7 +1,7 @@
 const express = require('express')
 const fetch = require('node-fetch')
 const parser = require('./js/parser.js')
-const getObamaMetricsForToday = require('./js/getObamaMetrics.js')
+const getObamaMetrics = require('./js/getObamaMetrics.js')
 
 const app = express()
 
@@ -9,7 +9,7 @@ const app = express()
 const metrics = {}
 
 // Helper functions:
-const handleError = (err) => {
+const handleError = (res, err) => {
   res.send(`So sorry, there's been an error: ${err}`)
 }
 
@@ -21,26 +21,24 @@ const fetchAndSetTrumpMetrics = () =>
       metrics.trump = json.pollster_estimates[0].values.hash
     })
 
-const setObamaMetrics = () => parser.parseCsv(metrics)
-
-
 // Render data:
-const render = (response, data) => {
-  response.send(data.obama.length.toString())
+const render = (response) => {
+  const results = getObamaMetrics(metrics.obama)
+  response.send(results)
 }
 
 // Routing:
 app.get('/', function (req, res) {
   if (metrics.trump && metrics.obama) {
-    render(res, metrics)
+    render(res)
   } else {
     fetchAndSetTrumpMetrics()
     .then(parser.parseCsv(metrics)
-      .then(data => { metrics.obama = data; })
-      .catch(handleError)
+      .then(data => { metrics.obama = data })
+      .catch(err => handleError(res, err))
     )
-    .then(() => render(res, metrics))
-    .catch(handleError)
+    .then(() => render(res))
+    .catch(err => handleError(res, err))
   }
 })
 
