@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Trump sucks at his job</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        font-family: 'Roboto', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      main {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      div {
+        text-align: center;
+      }
+      section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 50px;
+      }
+      section > h1 {
+        flex-basis: 100%;
+      }
+      h1 {
+        text-transform: capitalize;
+      }
+      h2 {
+        margin: 10px 0;
+      }
+      .metric {
+        margin: 0 20px;
+        font-size: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+      }
+      .biggest {
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      .caption {
+        font-size: 16px;
+      }
+      .approve {
+        color: #73b0e2;
+      }
+      .disapprove {
+        color: #e27373;
+      }
+    </style>
+  </head>
+  <body class="container">
+    <main>
+      <h1>Trump approval ratings compared to Obama's 8 years ago:</h1>
+      <% ["Trump", "Obama"].forEach(function(name) { %>
+        <% const key = name.toLowerCase() %>
+        <h2><%= name %></h1>
+        <section>
+          <div class="metric">
+            <div class="stat approve <%= biggest[key] === 'approve' ? 'biggest' : '' %>"><%= approve[key] %>%</div>
+            <div class="caption">Approve</div>
+          </div>
+          <div class="metric">
+            <div class="stat disapprove <%= biggest[key] === 'disapprove' ? 'biggest' : '' %>"><%= disapprove[key] %>%</div>
+            <div class="caption">Disapprove</div>
+          </div>
+        </section>
+      <% }) %>
+    </main>
+  </body>
+</html>
