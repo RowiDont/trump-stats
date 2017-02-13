@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
     <title>Trump sucks at his job</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <style>
@@ -34,9 +35,13 @@
       }
       h1 {
         text-transform: capitalize;
+        text-align: center;
       }
       h2 {
-        margin: 10px 0;
+        margin: 5px 0;
+      }
+      h5 {
+        margin: 0 0 10px 0;
       }
       .metric {
         margin: 0 20px;
@@ -67,6 +72,7 @@
       <% ["Trump", "Obama"].forEach(function(name) { %>
         <% const key = name.toLowerCase() %>
         <h2><%= name %></h1>
+        <h5>(<%= date[key] %>)</h2>
         <section>
           <div class="metric">
             <div class="stat approve <%= biggest[key] === 'approve' ? 'biggest' : '' %>"><%= approve[key] %>%</div>

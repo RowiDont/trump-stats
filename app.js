@@ -1,5 +1,6 @@
 const express = require('express')
 const fetch = require('node-fetch')
+const moment = require('moment')
 const parser = require('./js/parser.js')
 const getObamaMetrics = require('./js/getObamaMetrics.js')
 
@@ -8,6 +9,10 @@ app.set('view engine', 'ejs')
 
 // DATA constants:
 const metrics = {}
+
+parser.parseCsv(metrics)
+  .then(data => { metrics.obama = data })
+  .catch(err => console.log(err))
 
 // Helper functions:
 const handleError = (res, err) => {
@@ -21,12 +26,17 @@ const round = function (number, precision) {
   return roundedTempNumber / factor
 }
 
+const dataIsFresh = () => {
+  return metrics.fetchDate.isSame(moment(), 'd')
+}
+
 // Data processing and fetching:
 const fetchAndSetTrumpMetrics = () =>
   fetch('https://elections.huffingtonpost.com/pollster/api/v2/charts/trump-job-approval')
     .then(response => response.json())
     .then(json => {
       metrics.trump = json.pollster_estimates[0].values.hash
+      metrics.fetchDate = moment()
     })
 
 // Render data:
@@ -48,20 +58,20 @@ const render = (response) => {
     obama: approve.obama > disapprove.obama ? 'approve' : 'disapprove'
   }
 
-  response.render('index', { approve, disapprove, biggest })
+  const date = {
+    obama: moment(obamaNumbers[0][1]).format('MMMM Do, YYYY'),
+    trump: metrics.fetchDate.format('MMMM Do, YYYY')
+  }
+
+  response.render('index', { approve, disapprove, biggest, date })
 }
 
 // Routing:
 app.get('/', function (req, res) {
-  if (metrics.trump && metrics.obama) {
+  if (metrics.trump && metrics.obama && dataIsFresh()) {
     render(res)
   } else {
     fetchAndSetTrumpMetrics()
-    .then(
-      parser.parseCsv(metrics)
-      .then(data => { metrics.obama = data })
-      .catch(err => handleError(res, err))
-    )
     .then(() => render(res))
     .catch(err => handleError(res, err))
   }
