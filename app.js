@@ -59,7 +59,7 @@ const render = (response) => {
   }
 
   const date = {
-    obama: moment(obamaNumbers[0][1]).tz('America/New_York').format('MMMM Do, YYYY'),
+    obama: moment(obamaNumbers[0][1]).format('MMMM Do, YYYY'),
     trump: metrics.fetchDate.format('MMMM Do, YYYY')
   }
 
