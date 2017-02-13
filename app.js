@@ -1,6 +1,6 @@
 const express = require('express')
 const fetch = require('node-fetch')
-const moment = require('moment')
+const moment = require('moment-timezone')
 const parser = require('./js/parser.js')
 const getObamaMetrics = require('./js/getObamaMetrics.js')
 
@@ -27,7 +27,7 @@ const round = function (number, precision) {
 }
 
 const dataIsFresh = () => {
-  return metrics.fetchDate.isSame(moment(), 'd')
+  return metrics.fetchDate.isSame(moment().tz('America/New_York'), 'd')
 }
 
 // Data processing and fetching:
@@ -36,7 +36,7 @@ const fetchAndSetTrumpMetrics = () =>
     .then(response => response.json())
     .then(json => {
       metrics.trump = json.pollster_estimates[0].values.hash
-      metrics.fetchDate = moment()
+      metrics.fetchDate = moment().tz('America/New_York')
     })
 
 // Render data:
@@ -59,7 +59,7 @@ const render = (response) => {
   }
 
   const date = {
-    obama: moment(obamaNumbers[0][1]).format('MMMM Do, YYYY'),
+    obama: moment(obamaNumbers[0][1]).tz('America/New_York').format('MMMM Do, YYYY'),
     trump: metrics.fetchDate.format('MMMM Do, YYYY')
   }
 

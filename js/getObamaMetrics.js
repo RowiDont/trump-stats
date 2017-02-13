@@ -1,4 +1,4 @@
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 function findMetric (collection, label, date) {
   return collection.find(array => (array[0] === label && array[1] === date))
@@ -6,7 +6,7 @@ function findMetric (collection, label, date) {
 
 function getObamaMetrics (collection) {
   let results = []
-  let date = moment().subtract(8, 'years')
+  let date = moment().tz('America/New_York').subtract(8, 'years')
   let count = 0
   const dateString = (date) => date.format('YYYY-MM-DD')
 
