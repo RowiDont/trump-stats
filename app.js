@@ -7,10 +7,23 @@ const getObamaMetrics = require('./js/getObamaMetrics.js')
 const app = express()
 app.set('view engine', 'ejs')
 
+// Redirect to HTTPS:
+function enforceHttps (req, res, next) {
+  if (!req.secure &&
+    req.get('x-forwarded-proto') !== 'https' &&
+    process.env.NODE_ENV === 'production') {
+    res.redirect(301, `https://${req.get('host')}${req.url}`)
+  } else {
+    next()
+  }
+}
+
+app.use(enforceHttps)
+
 // DATA constants:
 const metrics = {}
 
-parser.parseCsv(metrics)
+parser.parseCsv()
   .then(data => { metrics.obama = data })
   .catch(err => console.log(err))
 
